@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerApp", "PuplisherApp\ServerApp.csproj", "{06D3D09F-74CA-4A19-A6D5-D01C0139BB37}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerApp", "ServerApp\ServerApp.csproj", "{06D3D09F-74CA-4A19-A6D5-D01C0139BB37}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientApp", "SubscriperApp\ClientApp.csproj", "{5EDE0CD8-FEB5-4149-A147-CAAB134C376E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientApp", "ClientApp\ClientApp.csproj", "{5EDE0CD8-FEB5-4149-A147-CAAB134C376E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Common", "App.Common\App.Common.csproj", "{5263FF9A-E76C-4476-84C4-9109B7817E66}"
 EndProject
