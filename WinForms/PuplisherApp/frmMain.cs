@@ -10,37 +10,42 @@ using System.Windows.Forms;
 using NetMQ;
 using NetMQ.Sockets;
 
-namespace WindowsFormsApplication2
+namespace ServerApp
 {
     public partial class frmMain : Form
     {
         NetMQSocket mSocket = null;
-        NetMQPoller poller = null;
+        NetMQPoller mPoller = null;
+
         public frmMain(NetMQSocket mSocket)
         {
             this.mSocket = mSocket;
             InitializeComponent();
 
-            poller = new NetMQPoller { mSocket };
+            mPoller = new NetMQPoller { mSocket };
             mSocket.ReceiveReady += MSocket_ReceiveReady;
             // start polling (on this thread)
-            poller.RunAsync();
+            mPoller.RunAsync();
 
-            
-
+            //mSocket.SendFrame("ServerApp is ready.");
         }
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            poller.Stop();
+            mPoller.Stop();
             base.OnClosing(e);
         }
 
         private void MSocket_ReceiveReady(object sender, NetMQSocketEventArgs e)
         {
-            Program.Log("MSocket_ReceiveReady");
+            var mData = e.Socket.ReceiveFrameString();
 
-            Action mAction = delegate { richTextBox1.AppendText(e.Socket.ReceiveFrameString() + Environment.NewLine); };
+            Program.Log("ServerApp Received : " + mData);
+
+            Action mAction = delegate 
+            {
+                richTextBox1.AppendText(mData + Environment.NewLine); 
+            };
 
             if (richTextBox1.InvokeRequired)
                 richTextBox1.Invoke(mAction);
@@ -56,9 +61,11 @@ namespace WindowsFormsApplication2
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Program.Log("Sending " + textBox1.Text);
-            mSocket.SendFrame("TopicA - " + textBox1.Text);
-            mSocket.SendFrame("TopicB - " + textBox1.Text);
+            Program.Log("ServerApp Sending " + textBox1.Text);
+
+            mSocket.SendFrame(textBox1.Text);
+
+            textBox1.SelectAll();
         }
     }
 }

@@ -6,8 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 
-namespace WindowsFormsApplication2
+namespace ServerApp
 {
     static class Program
     {
@@ -17,35 +18,56 @@ namespace WindowsFormsApplication2
         [STAThread]
         static void Main()
         {
-            Log("Application Started ..");
+            Log("ServerApp Started ..");
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            using (var pubSocket = new DealerSocket())
-            {
-                Log("DealerSocket socket binding...");
-                pubSocket.Options.SendHighWatermark = 1000;
-                pubSocket.Bind("tcp://*:12345");
+            StartSocket(() => new RouterSocket());
 
-                var msg = "TopicA msg- 1";
-                Log("Sending message : {0}", msg);
-                pubSocket.SendMoreFrame("TopicA").SendFrame(msg);
-
-                msg = "TopicB msg- 2";
-                Log("Sending message : {0}", msg);
-                pubSocket.SendMoreFrame("TopicB").SendFrame(msg);
-
-                Application.Run(new frmMain(pubSocket));
-
-                Log("Application Ended.");
-            }
+            Log("ServerApp Ended.");
 
         }
 
+
+        static void StartSocket<T>(Func<T> mFunction) where T : NetMQSocket
+        {
+            using (var mSocket = mFunction())
+            {
+                Log("Socket Type: " + mSocket.GetType().Name);
+                Log("Socket binding to tcp://*:12345");
+
+                //mSocket.Options.SendHighWatermark = 1000;
+
+                mSocket.Bind("tcp://*:12345");
+
+                //var msg = "TopicA msg- 1";
+                //Log("Sending message : {0}", msg);
+                ////mSocket.SendMoreFrame("TopicA").SendFrame(msg);
+                //mSocket.SendFrame(msg);
+
+                //msg = "TopicB msg- 2";
+                //Log("Sending message : {0}", msg);
+
+                //mSocket.SendMoreFrame("TopicB").SendFrame(msg);
+
+                Application.Run(new frmMain(mSocket));
+            }
+        }
+
+
+
         public static void Log(string mStr, params object[] mParam)
         {
-            File.AppendAllText("./PupApp.log.txt", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff \t") + (mParam == null ? mStr : string.Format(mStr, mParam)) + Environment.NewLine);
+            var mMsg = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff \t") +
+                        (mParam == null ? mStr : string.Format(mStr, mParam)) +
+                        Environment.NewLine;
+
+            if (Debugger.IsAttached)
+                Debug.Write(mMsg);
+            else
+
+                File.AppendAllText("./App.log.txt", mMsg);
         }
     }
 }

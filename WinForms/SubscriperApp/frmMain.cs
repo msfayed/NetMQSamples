@@ -11,7 +11,7 @@ using NetMQ;
 using NetMQ.Sockets;
 
 
-namespace SubscriperApp
+namespace ClientApp
 {
     public partial class frmMain : Form
     {
@@ -29,7 +29,7 @@ namespace SubscriperApp
             // start polling (on this thread)
             poller.RunAsync();
 
-            mSocket.SendFrame("Subsciber is ready , Send Events please.");
+            mSocket.SendFrame("ClientApp is ready.");
 
         }
 
@@ -41,9 +41,11 @@ namespace SubscriperApp
 
         private void MSocket_ReceiveReady(object sender, NetMQSocketEventArgs e)
         {
-            Program.Log("MSocket_ReceiveReady");
+            var mData = e.Socket.ReceiveFrameString();
 
-            Action mAction = delegate { richTextBox1.AppendText(e.Socket.ReceiveFrameString() + Environment.NewLine); };
+            Program.Log("ClientApp Received : " + mData);
+
+            Action mAction = delegate { richTextBox1.AppendText(mData + Environment.NewLine); };
 
             if (richTextBox1.InvokeRequired)
                 richTextBox1.Invoke(mAction);
@@ -55,6 +57,15 @@ namespace SubscriperApp
         private void frmMain_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Program.Log("ClientApp Sending " + textBox1.Text);
+
+            mSocket.SendFrame(textBox1.Text);
+
+            textBox1.SelectAll();
         }
     }
 }

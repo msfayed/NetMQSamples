@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using NetMQ;
 using NetMQ.Sockets;
+using System.Diagnostics;
 
 
-namespace SubscriperApp
+namespace ClientApp
 {
     static class Program
     {
@@ -19,29 +20,43 @@ namespace SubscriperApp
         [STAThread]
         static void Main()
         {
-            Log("Application Started ..");
+            Log("ClientApp Started ..");
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            using (var subSocket = new DealerSocket())
+            StartSocket(()=> new DealerSocket());
+
+            Log("ClientApp Ended.");
+
+
+        }
+
+        static void StartSocket<T>(Func<T> mFunction) where T : NetMQSocket
+        {
+            using (var mSocket = mFunction())
             {
-                subSocket.Options.ReceiveHighWatermark = 1000;
-                subSocket.Connect("tcp://localhost:12345");
-                
-                Log("Subscriber socket connecting...");
+                Log("Socket Type: " + mSocket.GetType().Name);
+                Log("Connecting Socket to tcp://localhost:12345");
 
-                Application.Run(new frmMain(subSocket));
+                //mSocket.Options.ReceiveHighWatermark = 1000;
+                mSocket.Connect("tcp://localhost:12345");
+
+                Application.Run(new frmMain(mSocket));
             }
-
-            Log("Application Ended.");
-
 
         }
 
         public static void Log(string mStr, params object[] mParam)
         {
-            File.AppendAllText("./SubApp.log.txt", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff \t") + (mParam == null ? mStr : string.Format(mStr, mParam)) + Environment.NewLine);
+            var mMsg = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff \t") +
+                        (mParam == null ? mStr : string.Format(mStr, mParam)) +
+                        Environment.NewLine;
+
+            if (Debugger.IsAttached)
+                Debug.Write(mMsg);
+            else
+                File.AppendAllText("./App.log.txt", mMsg);
         }
     }
 }
