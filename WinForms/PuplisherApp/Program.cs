@@ -23,7 +23,7 @@ namespace ServerApp
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            StartSocket(() => new RouterSocket());
+            StartSocket(() => new DealerSocket());
 
             Log("ServerApp Ended.");
 
@@ -34,8 +34,8 @@ namespace ServerApp
         {
             using (var mSocket = mFunction())
             {
-                Log("Socket Type: " + mSocket.GetType().Name);
-                Log("Socket binding to tcp://*:12345");
+                Log("ServerApp Socket Type: " + mSocket.GetType().Name);
+                Log("ServerApp Socket binding to tcp://*:12345");
 
                 //mSocket.Options.SendHighWatermark = 1000;
 
@@ -51,7 +51,7 @@ namespace ServerApp
 
                 //mSocket.SendMoreFrame("TopicB").SendFrame(msg);
 
-                Application.Run(new frmMain(mSocket));
+                Application.Run(new frmServerMain(mSocket));
             }
         }
 

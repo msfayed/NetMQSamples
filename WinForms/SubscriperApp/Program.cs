@@ -25,7 +25,7 @@ namespace ClientApp
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            StartSocket(()=> new DealerSocket());
+            StartSocket(() => new DealerSocket());
 
             Log("ClientApp Ended.");
 
@@ -36,13 +36,13 @@ namespace ClientApp
         {
             using (var mSocket = mFunction())
             {
-                Log("Socket Type: " + mSocket.GetType().Name);
-                Log("Connecting Socket to tcp://localhost:12345");
+                Log("ClientApp Socket Type: " + mSocket.GetType().Name);
+                Log("ClientApp Connecting Socket to tcp://localhost:12345");
 
                 //mSocket.Options.ReceiveHighWatermark = 1000;
                 mSocket.Connect("tcp://localhost:12345");
 
-                Application.Run(new frmMain(mSocket));
+                Application.Run(new frmClientMain(mSocket));
             }
 
         }
