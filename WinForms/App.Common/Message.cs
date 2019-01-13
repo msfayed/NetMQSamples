@@ -21,7 +21,7 @@ namespace App.Common
 
         static BinaryFormatter mSerializer = new BinaryFormatter();
 
-        public byte[] GetBytes()
+        public byte[] ToBytes()
         {
             byte[] mArray = null;
             using (var mStream = new MemoryStream())
@@ -48,7 +48,6 @@ namespace App.Common
         } 
 
         #endregion
-
 
     }
 
