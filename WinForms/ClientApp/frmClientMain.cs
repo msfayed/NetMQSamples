@@ -11,6 +11,7 @@ using NetMQ;
 using NetMQ.Sockets;
 using System.IO;
 using System.Drawing.Imaging;
+using App.Common;
 
 
 namespace ClientApp
@@ -32,19 +33,10 @@ namespace ClientApp
             poller.RunAsync();
 
             if (mSocket.HasOut)
-            
-{
-                //byte[] mImageBytes = null;
-                //using(var mStream = new MemoryStream())
-                //{
-                //   var mImage = Image.FromFile(@"C:\Users\Public\Pictures\Sample Pictures\Penguins.jpg");
-                //   mImage.Save(mStream,ImageFormat.Png);
-                //   mImageBytes = mStream.ToArray();
-                //}
-                //mSocket.SendFrame("ClientApp is ready.");
+            {
                 mSocket.SendFrame((new App.Common.Message() { MessageType = App.Common.MessageType.Image, MessageImage = Image.FromFile(@"C:\Users\Public\Pictures\Sample Pictures\Penguins.jpg") }).ToBytes());
                 mSocket.SendFrame((new App.Common.Message() { MessageType = App.Common.MessageType.Text, MessageText = "Hiii" }).ToBytes());
-            
+
             }
             else
                 Program.Log("ClientApp mSocket.HasOut == null !");
@@ -70,9 +62,10 @@ namespace ClientApp
                     richTextBox1.AppendText(mMsg.MessageType.ToString() + " - " + mMsg.MessageText + Environment.NewLine);
                 else if (mMsg.MessageType == App.Common.MessageType.Image)
                 {
-                    Clipboard.SetImage(mMsg.MessageImage);
-                    richTextBox1.Paste();
-                    richTextBox1.AppendText(Environment.NewLine);
+                    //Clipboard.SetImage(mMsg.MessageImage);
+                    //richTextBox1.Paste();
+                    //richTextBox1.AppendText(Environment.NewLine);
+                    richTextBox1.AppendImage(mMsg.MessageImage);
                 }
 
                 richTextBox1.Refresh();

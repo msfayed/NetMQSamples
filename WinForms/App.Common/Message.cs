@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace App.Common
 {
@@ -45,7 +46,7 @@ namespace App.Common
                     return (Message)mSerializer.Deserialize(mStream);
                 }
             }
-        } 
+        }
 
         #endregion
 

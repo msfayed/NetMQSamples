@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using NetMQ;
 using NetMQ.Sockets;
+using App.Common;
 
 namespace ServerApp
 {
@@ -54,9 +55,7 @@ namespace ServerApp
                     richTextBox1.AppendText(mMsg.MessageType.ToString() + " - " + mMsg.MessageText + Environment.NewLine);
                 else if (mMsg.MessageType == App.Common.MessageType.Image)
                 {
-                    Clipboard.SetImage(mMsg.MessageImage);
-                    richTextBox1.Paste();
-                    richTextBox1.AppendText(Environment.NewLine);
+                    richTextBox1.AppendImage(mMsg.MessageImage);
                 }
 
                 richTextBox1.Refresh();
